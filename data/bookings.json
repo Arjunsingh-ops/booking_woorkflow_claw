@@ -1,0 +1,110 @@
+[
+  {
+    "user": "Alice",
+    "station": "Station A",
+    "slot": "09:00"
+  },
+  {
+    "user": "Alice2",
+    "station": "Station B",
+    "slot": "09:00"
+  },
+  {
+    "user": "Alice3",
+    "station": "Station C",
+    "slot": "08:00"
+  },
+  {
+    "user": "arjuh",
+    "station": "Station A",
+    "slot": "10:00"
+  },
+  {
+    "user": "Arjun",
+    "station": "Station c",
+    "slot": "09:00"
+  },
+  {
+    "user": "arjun",
+    "station": "Station A",
+    "slot": "14:00"
+  },
+  {
+    "user": "Test",
+    "station": "Station A",
+    "slot": "11:00"
+  },
+  {
+    "user": "Test2",
+    "station": "Station A",
+    "slot": "12:00"
+  },
+  {
+    "user": "Nobody",
+    "station": "Station A",
+    "slot": "13:00"
+  },
+  {
+    "user": "Test3",
+    "station": "Station A",
+    "slot": "15:00"
+  },
+  {
+    "user": "LocalTest",
+    "station": "Station A",
+    "slot": "16:00"
+  },
+  {
+    "user": "arjun",
+    "station": "Station B",
+    "slot": "10:00"
+  },
+  {
+    "user": "TestUser",
+    "station": "Station B",
+    "slot": "11:00",
+    "booked_at": "2026-06-23T21:53:57.561480"
+  },
+  {
+    "user": "Arjun",
+    "station": "Station B",
+    "slot": "12:00",
+    "booked_at": "2026-06-23T21:55:00.849845"
+  },
+  {
+    "user": "Arjun",
+    "station": "Station C",
+    "slot": "13:00",
+    "booked_at": "2026-06-23T21:55:17.804687"
+  },
+  {
+    "user": "Arjun",
+    "station": "Station C",
+    "slot": "10:00",
+    "booked_at": "2026-06-23T22:00:29.053413"
+  },
+  {
+    "user": "Arjun",
+    "station": "Station C",
+    "slot": "11:00",
+    "booked_at": "2026-06-23T22:00:38.932640"
+  },
+  {
+    "user": "arjun",
+    "station": "Station B",
+    "slot": "13:00",
+    "booked_at": "2026-06-23T22:01:06.041174"
+  },
+  {
+    "user": "Arjun",
+    "station": "Station C",
+    "slot": "14:00",
+    "booked_at": "2026-06-23T22:01:46.634946"
+  },
+  {
+    "user": "Arju",
+    "station": "Station B",
+    "slot": "14:00",
+    "booked_at": "2026-06-23T22:28:04.564488"
+  }
+]
