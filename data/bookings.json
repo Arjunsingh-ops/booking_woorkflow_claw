@@ -1,110 +1,121 @@
 [
   {
+    "booking_id": "b8a5d7c3-2b21-4f8a-9e1b-85fc7a1f592f",
     "user": "Alice",
     "station": "Station A",
-    "slot": "09:00"
+    "slot": "09:00",
+    "booked_at": "2026-06-24T10:00:00.000000"
   },
   {
-    "user": "Alice2",
+    "booking_id": "c1f7b9e5-4d2c-4971-a0e2-63b72c5a24b1",
+    "user": "Bob",
     "station": "Station B",
-    "slot": "09:00"
+    "slot": "09:00",
+    "booked_at": "2026-06-24T10:15:00.000000"
   },
   {
-    "user": "Alice3",
+    "booking_id": "a5e9f1d2-7c3b-4f81-8d2a-9e3b4a2c5b16",
+    "user": "Charlie",
     "station": "Station C",
-    "slot": "08:00"
+    "slot": "08:00",
+    "booked_at": "2026-06-24T10:30:00.000000"
   },
   {
-    "user": "arjuh",
+    "booking_id": "d9b2e8a1-5f3c-4b72-9d1a-8c4b2a3f5e17",
+    "user": "Diana",
     "station": "Station A",
-    "slot": "10:00"
+    "slot": "10:00",
+    "booked_at": "2026-06-24T11:00:00.000000"
   },
   {
-    "user": "Arjun",
-    "station": "Station c",
-    "slot": "09:00"
-  },
-  {
-    "user": "arjun",
-    "station": "Station A",
-    "slot": "14:00"
-  },
-  {
-    "user": "Test",
-    "station": "Station A",
-    "slot": "11:00"
-  },
-  {
-    "user": "Test2",
-    "station": "Station A",
-    "slot": "12:00"
-  },
-  {
-    "user": "Nobody",
-    "station": "Station A",
-    "slot": "13:00"
-  },
-  {
-    "user": "Test3",
-    "station": "Station A",
-    "slot": "15:00"
-  },
-  {
-    "user": "LocalTest",
-    "station": "Station A",
-    "slot": "16:00"
-  },
-  {
-    "user": "arjun",
+    "booking_id": "e7c4f1a2-9d3b-4b81-a2c3-9d4e5f6a7b8c",
+    "user": "Ethan",
     "station": "Station B",
-    "slot": "10:00"
+    "slot": "10:00",
+    "booked_at": "2026-06-24T11:30:00.000000"
   },
   {
-    "user": "TestUser",
+    "booking_id": "f8d5e2a3-1c4b-4b92-b3d4-0e1f2a3b4c5d",
+    "user": "Fiona",
+    "station": "Station C",
+    "slot": "10:00",
+    "booked_at": "2026-06-24T12:00:00.000000"
+  },
+  {
+    "booking_id": "e82eb6ed-098a-45ed-8270-b207032d5fdf",
+    "user": "Arjun",
+    "station": "Station A",
+    "slot": "11:00",
+    "booked_at": "2026-06-24T21:33:51.138803"
+  },
+  {
+    "booking_id": "37340ed8-4b4a-4dc2-88dc-2b1e0548d169",
+    "user": "Bobby",
+    "station": "Station A",
+    "slot": "12:00",
+    "booked_at": "2026-06-24T21:33:56.241105"
+  },
+  {
+    "booking_id": "5eb39ddf-d822-466d-afaa-405f6db7212a",
+    "user": "Arjun",
+    "station": "Station A",
+    "slot": "13:00",
+    "booked_at": "2026-06-25T13:12:37.408538"
+  },
+  {
+    "booking_id": "cad82271-4a5d-4208-adb4-b734c1e88d6f",
+    "user": "Arjun",
+    "station": "Station A",
+    "slot": "14:00",
+    "booked_at": "2026-06-25T13:13:18.011458"
+  },
+  {
+    "booking_id": "ea63f505-f6dd-44ad-94ed-dd8d591bb3eb",
+    "user": "RTRJUN",
+    "station": "Station A",
+    "slot": "15:00",
+    "booked_at": "2026-06-25T13:16:19.413983"
+  },
+  {
+    "booking_id": "a7800b8c-ebac-476d-b10e-788931bc0e30",
+    "user": "Arjun",
+    "station": "Station A",
+    "slot": "16:00",
+    "booked_at": "2026-06-26T13:08:30.466493"
+  },
+  {
+    "booking_id": "bdfc19cc-44ad-457e-86f3-8920895c6c46",
+    "user": "arjun",
     "station": "Station B",
     "slot": "11:00",
-    "booked_at": "2026-06-23T21:53:57.561480"
+    "booked_at": "2026-06-26T14:26:40.480778"
   },
   {
+    "booking_id": "0b496576-71d8-4d3e-811c-0566791e444d",
     "user": "Arjun",
     "station": "Station B",
     "slot": "12:00",
-    "booked_at": "2026-06-23T21:55:00.849845"
+    "booked_at": "2026-06-26T15:23:28.595472"
   },
   {
+    "booking_id": "ec2ab96c-0dec-4083-8537-08b71d7280b9",
     "user": "Arjun",
-    "station": "Station C",
+    "station": "Station B",
     "slot": "13:00",
-    "booked_at": "2026-06-23T21:55:17.804687"
+    "booked_at": "2026-06-27T07:37:01.851750"
   },
   {
-    "user": "Arjun",
-    "station": "Station C",
-    "slot": "10:00",
-    "booked_at": "2026-06-23T22:00:29.053413"
-  },
-  {
-    "user": "Arjun",
-    "station": "Station C",
-    "slot": "11:00",
-    "booked_at": "2026-06-23T22:00:38.932640"
-  },
-  {
+    "booking_id": "b67ef5f0-c826-4b0d-ba12-b3461362df53",
     "user": "arjun",
     "station": "Station B",
-    "slot": "13:00",
-    "booked_at": "2026-06-23T22:01:06.041174"
+    "slot": "14:00",
+    "booked_at": "2026-06-27T08:27:34.837642"
   },
   {
-    "user": "Arjun",
+    "booking_id": "3f6076a0-5a53-4a1a-b129-212bebd08d30",
+    "user": "arjun",
     "station": "Station C",
-    "slot": "14:00",
-    "booked_at": "2026-06-23T22:01:46.634946"
-  },
-  {
-    "user": "Arju",
-    "station": "Station B",
-    "slot": "14:00",
-    "booked_at": "2026-06-23T22:28:04.564488"
+    "slot": "09:00",
+    "booked_at": "2026-06-27T08:40:28.783540"
   }
 ]

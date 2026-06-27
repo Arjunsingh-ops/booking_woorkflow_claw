@@ -1,146 +1,232 @@
-# Booking Workflow Claw ⚡
+# Booking Workflow Claw
 
-An intelligent EV charging station booking system with two interfaces — a standard form-based workflow and a Groq-powered AI agent that parses natural-language requests.
-
----
-
-## Goal
-
-Automatically manage EV charging bookings with smart fallback logic:
-1. Book the requested slot if available.
-2. Find an alternative slot at the same station if the requested one is taken.
-3. **Auto-rebook** at another station if the entire station is full (toggleable).
-4. Escalate with cross-station suggestions if auto-rebooking is disabled or nothing is available.
+An autonomous AI agent for EV charging station booking built using the Claw ecosystem. The agent owns the complete booking workflow through reasoning, tool orchestration, workflow memory, exception handling, and auditability.
 
 ---
 
-## Inputs
+# Features
 
-### Standard App (`app.py` — port 8501)
-| Field | Type | Description |
-|-------|------|-------------|
-| User Name | Text | Name of the person booking |
-| Station | Dropdown | Station A, B, or C |
-| Preferred Slot | Dropdown | Time slot (08:00–17:00) |
-| Auto-Rebook | Checkbox | Auto-book at another station if preferred is full |
-
-### AI App (`app_ai.py` — port 8502)
-| Field | Type | Description |
-|-------|------|-------------|
-| Booking Request | Text Area | Natural-language request (e.g. *"Book Station A at 09:00 for Arjun"*) |
-| Auto-Rebook | Checkbox | Auto-book at another station if preferred is full |
+* Natural language booking requests
+* Autonomous workflow execution
+* Tool-based architecture
+* Workflow memory
+* Audit trail
+* Alternative slot recommendation
+* Duplicate booking detection
+* Escalation handling
+* Interactive Streamlit dashboard
+* OpenClaw-compatible skill specification
 
 ---
 
-## Tools
-
-| # | Tool | File | Purpose |
-|---|------|------|---------|
-| 1 | Check Station | `tools/check_station.py` | Verify station exists in `data/stations.json` |
-| 2 | Check Slot | `tools/check_slot.py` | Check if a specific slot is available at a station |
-| 3 | Find Alternative Slot | `tools/find_alternative_slot.py` | Find the next available slot at the same station |
-| 4 | Find Available Across Stations | `tools/find_available_across_stations.py` | List available slots at all other stations |
-| 5 | Create Booking | `tools/create_booking.py` | Write a booking record to `data/bookings.json` |
-| 6 | Generate Log | `tools/generate_log.py` | Create a timestamped booking log entry |
-| 7 | Escalate Issue | `tools/escalate_issue.py` | Generate an escalation report when booking fails |
-
----
-
-## Agents
-
-### Standard Agent (`agents/booking_agent.py`)
-Deterministic, rule-based agent. Receives structured inputs (user, station, slot, auto_rebook) and executes the workflow step by step.
-
-### AI Agent (`agents/ai_booking_agent.py`)
-Groq-powered (LLaMA 3.3 70B) agent. Parses a natural-language request via LLM to extract station, slot, and user, then follows the same booking workflow.
-
----
-
-## Workflow
+# Architecture
 
 ```
-User Request
-  │
-  ├─ [AI Agent only] Parse natural language → extract station, slot, user
-  │
-  ▼
-Validate Station ──── Not Found ──► FAILED
-  │
-  ▼
-Check Slot Availability
-  │
-  ├─ Available ──────────────────► CONFIRMED ✅
-  │
-  ▼
-Find Alternative Slot (same station)
-  │
-  ├─ Found ──────────────────────► CONFIRMED_ALTERNATIVE 🔄
-  │
-  ▼
-Auto-Rebook Enabled?
-  │
-  ├─ Yes + slots at other stations ► AUTO_REBOOKED 🔄 (at another station)
-  │
-  ▼
-Escalate ────────────────────────► ESCALATED 🚨 + cross-station suggestions
+                  User
+                    │
+                    ▼
+           OpenClaw / NemoClaw
+                    │
+                    ▼
+            BookingAgent.run()
+                    │
+      ┌─────────────┼─────────────┐
+      ▼             ▼             ▼
+check_station   check_slot   duplicate_check
+      │             │             │
+      └─────────────┼─────────────┘
+                    ▼
+        find_alternative_slot
+                    │
+                    ▼
+           create_booking
+                    │
+                    ▼
+          bookings.json
+                    │
+                    ▼
+            audit_log.json
 ```
 
 ---
 
-## Statuses
+# Agent Workflow
 
-| Status | Meaning |
-|--------|---------|
-| `CONFIRMED` | Requested slot booked successfully |
-| `CONFIRMED_ALTERNATIVE` | Requested slot taken; booked next available at the same station |
-| `AUTO_REBOOKED` | Station fully booked; automatically booked at a different station |
-| `ESCALATED` | No booking made; suggestions shown for manual selection |
-| `FAILED` | Station not found or input parsing error |
-| `ERROR` | Unexpected exception (AI agent only) |
+```
+START
+
+↓
+
+Intent Extraction
+
+↓
+
+Station Validation
+
+↓
+
+Duplicate Booking Check
+
+↓
+
+Slot Availability Check
+
+↓
+
+Booking
+
+↓
+
+SUCCESS
+
+OR
+
+Alternative Search
+
+↓
+
+Alternative Booking
+
+↓
+
+SUCCESS
+
+OR
+
+Escalation
+```
 
 ---
 
-## Data
-
-| File | Purpose |
-|------|---------|
-| `data/stations.json` | Station definitions — name, location, and available time slots |
-| `data/bookings.json` | All booking records — user, station, slot, and timestamp |
-
----
-
-## Project Structure
+# Project Structure
 
 ```
 booking-workflow-claw/
-├── app.py                  # Standard booking UI (Streamlit, port 8501)
-├── app_ai.py               # AI booking UI (Streamlit, port 8502)
+
 ├── agents/
-│   ├── booking_agent.py    # Rule-based booking agent
-│   └── ai_booking_agent.py # Groq LLM-powered booking agent
+│   └── booking_agent.py
+│
 ├── tools/
 │   ├── check_station.py
 │   ├── check_slot.py
-│   ├── find_alternative_slot.py
-│   ├── find_available_across_stations.py
 │   ├── create_booking.py
-│   ├── generate_log.py
-│   └── escalate_issue.py
+│   ├── check_duplicate_booking.py
+│   ├── find_alternative_slot.py
+│   ├── escalate_issue.py
+│   ├── get_booking_history.py
+│   └── log_decision.py
+│
 ├── data/
+│   ├── bookings.json
 │   ├── stations.json
-│   └── bookings.json
-├── .env                    # GROQ_API_KEY
-└── claw.md                 # This file
+│   └── audit_log.json
+│
+├── memory/
+│
+├── app_ai.py
+├── app_openclaw.py
+├── AGENTS.md
+├── TOOLS.md
+├── SOUL.md
+└── USER.md
 ```
 
 ---
 
-## Running
+# Memory
+
+## Short-Term
+
+* Current workflow state
+* Extracted entities
+* Tool outputs
+* Decisions
+
+## Persistent
+
+* Booking history
+* Audit logs
+* Station metadata
+
+---
+
+# Exception Handling
+
+The agent handles:
+
+* Invalid stations
+* Duplicate bookings
+* Slot conflicts
+* Alternative slot allocation
+* Missing information
+* Tool failures
+* Escalation scenarios
+
+---
+
+# Audit Trail
+
+Each workflow execution records:
+
+* User request
+* Workflow state transitions
+* Tool invocations
+* Agent decisions
+* Final outcome
+* Timestamp
+
+---
+
+# Technology Stack
+
+* Python
+* Streamlit
+* Groq LLM
+* OpenClaw / NemoClaw
+* JSON Memory Store
+
+---
+
+# Running the Project
+
+Create a virtual environment:
 
 ```bash
-# Standard booking app
-streamlit run app.py --server.port 8501
-
-# AI booking app (requires GROQ_API_KEY in .env)
-streamlit run app_ai.py --server.port 8502
+python3 -m venv .venv
+source .venv/bin/activate
 ```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the dashboard:
+
+```bash
+streamlit run app_ai.py
+```
+
+Run the CLI:
+
+```bash
+python app_openclaw.py
+```
+
+---
+
+# Future Improvements
+
+* Multi-agent coordination
+* Database persistence
+* Authentication
+* Calendar integration
+* Additional Eko workflow templates
+* Full OpenClaw tool execution integration
+
+---
+
+# Author
+
+Arjun Singh

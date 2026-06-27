@@ -1,0 +1,19 @@
+{
+  "id": "ev-booking",
+  "name": "EV Booking",
+  "description": "Execute the EV Booking workflow.",
+  "version": "0.1.0",
+  "configSchema": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+  },
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "tools": [
+      "book_ev_slot"
+    ]
+  }
+}
