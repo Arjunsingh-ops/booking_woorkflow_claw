@@ -2,6 +2,7 @@ import subprocess
 import json
 import streamlit as st
 from agents.booking_agent import BookingAgent
+from openclaw_client import run_openclaw
 
 # Set page configuration with premium styling elements
 st.set_page_config(
@@ -106,12 +107,37 @@ if st.button("Initialize Autonomous Agent", type="primary"):
     else:
         with st.spinner("Agent initializing state machine and memory manager..."):
             try:
-                agent = BookingAgent()
+                # Call OpenClaw runtime tool directly (minimal integration layer).
+                # This avoids direct Groq prompting in Streamlit and forces immediate tool use.
+                openclaw_request = {
+                    "tool": "book_ev_slot",
+                    "parameters": {
+                        "request": user_request
+                    }
+                }
 
-                record = agent.run(
-                    user_request,
-                    auto_rebook=auto_rebook
-                )                
+                ow = run_openclaw(
+                    json.dumps(openclaw_request, ensure_ascii=False)
+                )
+
+                if ow.get("returncode") != 0:
+                    raise RuntimeError(
+                        f"OpenClaw tool invocation failed: rc={ow.get('returncode')} stderr={ow.get('stderr')}"
+                    )
+
+                # Expect plugin to return JSON on stdout.
+                # If OpenClaw wraps output, try to locate the last JSON object.
+                stdout = (ow.get("stdout") or "").strip()
+                try:
+                    plugin_result = json.loads(stdout)
+                except Exception:
+                    # Fallback: attempt to parse the last JSON block
+                    start = stdout.rfind("{")
+                    plugin_result = json.loads(stdout[start:])
+
+                # Preserve existing Streamlit expectations: `record` dict with `final_outcome`.
+                record = plugin_result if isinstance(plugin_result, dict) else {"final_outcome": plugin_result}
+                
                 
                 # Display Results
                 outcome = record.get("final_outcome", {})
