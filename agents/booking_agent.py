@@ -1,7 +1,5 @@
 import json
 import os
-from dotenv import load_dotenv
-from groq import Groq
 
 from memory.state_manager import StateManager, WorkflowState
 from tools.check_station import check_station
@@ -13,73 +11,25 @@ from tools.get_booking_history import get_booking_history
 from tools.log_decision import log_decision
 from tools.escalate_issue import escalate_issue
 
-load_dotenv()
-
 class BookingAgent:
-    def __init__(self, api_key: str = None, audit_log_path: str = None):
-        self.api_key = api_key or os.getenv("GROQ_API_KEY")
-        if not self.api_key:
-            raise ValueError("GROQ_API_KEY not found in environment or parameters.")
-        self.client = Groq(api_key=self.api_key)
+    def __init__(self, audit_log_path: str = None):
         self.audit_log_path = audit_log_path
 
-    def run(self, user_request: str, auto_rebook: bool = True) -> dict:
+    def run(self, intent_data: dict, user_request: str = "Extracted via OpenClaw", auto_rebook: bool = True) -> dict:
         """
-        Runs the autonomous booking workflow end-to-end.
+        Runs the autonomous booking workflow end-to-end based on structured intent.
         """
         # 1. Initialize workflow memory
         state_mgr = StateManager(user_request, audit_log_path=self.audit_log_path)
         
         try:
-            # 2. Extract Intent and Entities (LLM boundary)
-            prompt = f"""
-You are an EV Charging Booking Assistant.
-Extract the booking details from the user's natural language request.
-
-Return ONLY a valid JSON object. Do not include any conversational filler, markdown formatting (other than json fences if needed), or explanatory text.
-
-JSON Schema:
-{{
-    "action": "book" | "view_history",
-    "station": "Name of station (e.g. 'Station A')" | null,
-    "slot": "HH:MM" (e.g. "09:00") | null,
-    "user": "Name of user" | null
-}}
-
-User Request:
-"{user_request}"
-"""
-            # Log transition and call LLM
-            state_mgr.log_decision("Invoking Groq LLM for entity extraction and intent parsing.")
+            # Skip LLM boundary, intent is already provided by OpenClaw
+            state_mgr.log_decision("Received extracted intent directly from OpenClaw.")
             
-            response = self.client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                messages=[
-                    {"role": "system", "content": "You are a precise entity extraction assistant. Always respond with raw JSON only."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0
-            )
-            
-            raw_content = response.choices[0].message.content.strip()
-            cleaned = raw_content.replace("```json", "").replace("```", "").strip()
-            
-            try:
-                extracted = json.loads(cleaned)
-            except json.JSONDecodeError as e:
-                # Handled exception: JSON corrupted
-                state_mgr.log_decision(f"Failed to parse LLM JSON: {cleaned}", {"error": str(e)})
-                state_mgr.transition(WorkflowState.ESCALATE, "Corrupted JSON output from entity extraction.")
-                
-                esc_result = escalate_issue("Corrupted entity extraction JSON format.", severity="MEDIUM")
-                state_mgr.log_tool_invocation("escalate_issue", {"reason": "Corrupted extraction JSON"}, esc_result, "SUCCESS")
-                
-                state_mgr.set_final_outcome("ERROR", {"error": "Failed to parse intent details."})
-                state_mgr.transition(WorkflowState.COMPLETE, "Workflow failed due to extraction failure.")
-                return state_mgr.persist()
-                
+            extracted = intent_data
             state_mgr.log_intent(extracted)
-            action = extracted.get("action", "book")
+            
+            action = extracted.get("action", extracted.get("intent", "book"))
             station = extracted.get("station")
             slot = extracted.get("slot")
             user = extracted.get("user")

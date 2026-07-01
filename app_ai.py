@@ -107,36 +107,29 @@ if st.button("Initialize Autonomous Agent", type="primary"):
     else:
         with st.spinner("Agent initializing state machine and memory manager..."):
             try:
-                # Call OpenClaw runtime tool directly (minimal integration layer).
-                # This avoids direct Groq prompting in Streamlit and forces immediate tool use.
-                openclaw_request = {
-                    "tool": "book_ev_slot",
-                    "parameters": {
-                        "request": user_request
-                    }
-                }
-
-                ow = run_openclaw(
-                    json.dumps(openclaw_request, ensure_ascii=False)
-                )
+                # 1. Use OpenClaw to extract the intent from natural language
+                ow = run_openclaw(user_request)
 
                 if ow.get("returncode") != 0:
                     raise RuntimeError(
-                        f"OpenClaw tool invocation failed: rc={ow.get('returncode')} stderr={ow.get('stderr')}"
+                        f"OpenClaw extraction failed: rc={ow.get('returncode')} stderr={ow.get('stderr')}"
                     )
 
-                # Expect plugin to return JSON on stdout.
-                # If OpenClaw wraps output, try to locate the last JSON object.
                 stdout = (ow.get("stdout") or "").strip()
+                
                 try:
-                    plugin_result = json.loads(stdout)
-                except Exception:
-                    # Fallback: attempt to parse the last JSON block
-                    start = stdout.rfind("{")
-                    plugin_result = json.loads(stdout[start:])
+                    # Fallback: attempt to parse the JSON block from output
+                    start = stdout.find("{")
+                    end = stdout.rfind("}") + 1
+                    if start == -1 or end == 0:
+                        raise ValueError("No JSON object found in output")
+                    intent_data = json.loads(stdout[start:end])
+                except Exception as e:
+                    raise RuntimeError(f"Failed to parse OpenClaw output into JSON: {e}\nOutput: {stdout}")
 
-                # Preserve existing Streamlit expectations: `record` dict with `final_outcome`.
-                record = plugin_result if isinstance(plugin_result, dict) else {"final_outcome": plugin_result}
+                # 2. Pass extracted intent to BookingAgent
+                agent = BookingAgent(audit_log_path="data/audit_log.json")
+                record = agent.run(intent_data=intent_data, user_request=user_request, auto_rebook=auto_rebook)
                 
                 
                 # Display Results

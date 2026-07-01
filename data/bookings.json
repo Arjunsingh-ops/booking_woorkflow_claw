@@ -117,5 +117,12 @@
     "station": "Station C",
     "slot": "09:00",
     "booked_at": "2026-06-27T08:40:28.783540"
+  },
+  {
+    "booking_id": "0fca90f7-7621-4b02-8e28-01a509fc5b05",
+    "user": "Tom",
+    "station": "Station C",
+    "slot": "11:00",
+    "booked_at": "2026-07-01T13:23:29.571267"
   }
 ]

@@ -3365,5 +3365,296 @@
       "slot": "09:00",
       "booked_at": "2026-06-27T08:40:28.783540"
     }
+  },
+  {
+    "record_type": "independent_decision",
+    "decision_id": "923a30d4-28d5-42f9-83e4-14a578e9084a",
+    "timestamp": "2026-07-01T13:23:29.573187",
+    "state": "BOOK_SLOT",
+    "decision": "Confirmed auto-rebooked booking 0fca90f7-7621-4b02-8e28-01a509fc5b05 for Tom",
+    "context": {
+      "booking_id": "0fca90f7-7621-4b02-8e28-01a509fc5b05",
+      "user": "Tom",
+      "station": "Station C",
+      "slot": "11:00",
+      "booked_at": "2026-07-01T13:23:29.571267"
+    }
+  },
+  {
+    "workflow_id": "20260701132329579421",
+    "start_time": "2026-07-01T13:23:29.569011",
+    "end_time": "2026-07-01T13:23:29.579410",
+    "user_request": "book station A at 10:00 for tom",
+    "extracted_intent": {
+      "intent": "BOOK",
+      "station": "Station A",
+      "slot": "10:00",
+      "user": "Tom"
+    },
+    "state_transitions": [
+      {
+        "timestamp": "2026-07-01T13:23:29.569011",
+        "from_state": null,
+        "to_state": "START",
+        "reason": "Workflow initiated"
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.569045",
+        "from_state": "START",
+        "to_state": "VALIDATE_STATION",
+        "reason": "Validating existence of station 'Station A'"
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.569632",
+        "from_state": "VALIDATE_STATION",
+        "to_state": "CHECK_DUPLICATE_BOOKING",
+        "reason": "Checking if user 'Tom' already booked 'Station A' at '10:00'"
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.570290",
+        "from_state": "CHECK_DUPLICATE_BOOKING",
+        "to_state": "CHECK_SLOT",
+        "reason": "Checking availability of slot '10:00' at 'Station A'"
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.570601",
+        "from_state": "CHECK_SLOT",
+        "to_state": "AUTO_BOOK_ALTERNATIVE",
+        "reason": "Slot '10:00' is taken/invalid. Searching alternatives."
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.571073",
+        "from_state": "AUTO_BOOK_ALTERNATIVE",
+        "to_state": "BOOK_SLOT",
+        "reason": "Auto-rebooking at alternative station 'Station C' for '11:00'."
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.579410",
+        "from_state": "BOOK_SLOT",
+        "to_state": "COMPLETE",
+        "reason": "Auto-rebooked booking confirmed successfully."
+      }
+    ],
+    "tool_invocations": [
+      {
+        "timestamp": "2026-07-01T13:23:29.569616",
+        "state": "VALIDATE_STATION",
+        "tool": "check_station",
+        "input": {
+          "station_name": "Station A"
+        },
+        "output": {
+          "status": "SUCCESS",
+          "data": {
+            "name": "Station A",
+            "location": "Downtown",
+            "slots": [
+              "09:00",
+              "10:00",
+              "11:00",
+              "12:00",
+              "13:00",
+              "14:00",
+              "15:00",
+              "16:00"
+            ]
+          },
+          "error": null
+        },
+        "status": "SUCCESS"
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.570275",
+        "state": "CHECK_DUPLICATE_BOOKING",
+        "tool": "check_duplicate_booking",
+        "input": {
+          "user": "Tom",
+          "station": "Station A",
+          "slot": "10:00"
+        },
+        "output": {
+          "status": "NO_DUPLICATE",
+          "data": {
+            "existing_booking": null
+          },
+          "error": null
+        },
+        "status": "NO_DUPLICATE"
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.570591",
+        "state": "CHECK_SLOT",
+        "tool": "check_slot",
+        "input": {
+          "station_name": "Station A",
+          "slot": "10:00"
+        },
+        "output": {
+          "status": "UNAVAILABLE",
+          "data": {
+            "station": "Station A",
+            "slot": "10:00",
+            "is_available": false
+          },
+          "error": null
+        },
+        "status": "UNAVAILABLE"
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.570834",
+        "state": "AUTO_BOOK_ALTERNATIVE",
+        "tool": "find_alternative_slot",
+        "input": {
+          "station_name": "Station A",
+          "requested_slot": "10:00",
+          "cross_station": false
+        },
+        "output": {
+          "status": "NONE_AVAILABLE",
+          "data": {
+            "station": "Station A",
+            "slot": null,
+            "suggestions": [],
+            "checked_slots": [
+              "09:00",
+              "10:00",
+              "11:00",
+              "12:00",
+              "13:00",
+              "14:00",
+              "15:00",
+              "16:00"
+            ]
+          },
+          "error": null
+        },
+        "status": "NONE_AVAILABLE"
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.571062",
+        "state": "AUTO_BOOK_ALTERNATIVE",
+        "tool": "find_alternative_slot",
+        "input": {
+          "station_name": "Station A",
+          "requested_slot": "10:00",
+          "cross_station": true
+        },
+        "output": {
+          "status": "FOUND",
+          "data": {
+            "station": null,
+            "slot": null,
+            "suggestions": [
+              {
+                "station": "Station C",
+                "slot": "11:00"
+              },
+              {
+                "station": "Station C",
+                "slot": "12:00"
+              },
+              {
+                "station": "Station C",
+                "slot": "13:00"
+              },
+              {
+                "station": "Station C",
+                "slot": "14:00"
+              },
+              {
+                "station": "Station C",
+                "slot": "15:00"
+              },
+              {
+                "station": "Station C",
+                "slot": "16:00"
+              },
+              {
+                "station": "Station C",
+                "slot": "17:00"
+              }
+            ],
+            "checked_slots": [
+              "Station B:09:00",
+              "Station B:10:00",
+              "Station B:11:00",
+              "Station B:12:00",
+              "Station B:13:00",
+              "Station B:14:00",
+              "Station C:08:00",
+              "Station C:09:00",
+              "Station C:10:00",
+              "Station C:11:00",
+              "Station C:12:00",
+              "Station C:13:00",
+              "Station C:14:00",
+              "Station C:15:00",
+              "Station C:16:00",
+              "Station C:17:00"
+            ]
+          },
+          "error": null
+        },
+        "status": "FOUND"
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.573141",
+        "state": "BOOK_SLOT",
+        "tool": "create_booking",
+        "input": {
+          "user": "Tom",
+          "station": "Station C",
+          "slot": "11:00"
+        },
+        "output": {
+          "status": "SUCCESS",
+          "data": {
+            "booking_id": "0fca90f7-7621-4b02-8e28-01a509fc5b05",
+            "user": "Tom",
+            "station": "Station C",
+            "slot": "11:00",
+            "booked_at": "2026-07-01T13:23:29.571267"
+          },
+          "error": null
+        },
+        "status": "SUCCESS"
+      }
+    ],
+    "decisions": [
+      {
+        "timestamp": "2026-07-01T13:23:29.569031",
+        "state": "START",
+        "decision": "Received extracted intent directly from OpenClaw.",
+        "context": {}
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.570840",
+        "state": "AUTO_BOOK_ALTERNATIVE",
+        "decision": "No alternative slots available at 'Station A'.",
+        "context": {}
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.571068",
+        "state": "AUTO_BOOK_ALTERNATIVE",
+        "decision": "Auto-rebooking enabled. Selected first suggestion: 'Station C' at '11:00'.",
+        "context": {}
+      },
+      {
+        "timestamp": "2026-07-01T13:23:29.573150",
+        "state": "BOOK_SLOT",
+        "decision": "Auto-rebooked booking confirmed. ID: 0fca90f7-7621-4b02-8e28-01a509fc5b05",
+        "context": {}
+      }
+    ],
+    "final_outcome": {
+      "status": "AUTO_REBOOKED",
+      "requested_station": "Station A",
+      "requested_slot": "10:00",
+      "booking_id": "0fca90f7-7621-4b02-8e28-01a509fc5b05",
+      "user": "Tom",
+      "station": "Station C",
+      "slot": "11:00",
+      "booked_at": "2026-07-01T13:23:29.571267"
+    }
   }
 ]
